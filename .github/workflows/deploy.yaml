@@ -22,14 +22,14 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/drive-sheet-job:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/drive-sheet-job:latest
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest .
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest
 
       - name: Deploy to Cloud Run Job
         run: |
           gcloud run jobs update drive-sheet-job \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/drive-sheet-job:latest \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest \
             --region=us-central1 || \
           gcloud run jobs create drive-sheet-job \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/drive-sheet-job:latest \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest \
             --region=us-central1
