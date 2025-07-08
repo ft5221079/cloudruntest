@@ -17,19 +17,20 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Authorize Docker to push to Google Artifact Registry
-        run: gcloud auth configure-docker
+      - name: Authorize Docker to push to Artifact Registry
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build and push Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest .
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest
+          docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloudruntest/drive-sheet-job:latest .
+          docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloudruntest/drive-sheet-job:latest
 
       - name: Deploy to Cloud Run Job
         run: |
           gcloud run jobs update drive-sheet-job \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest \
+            --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloudruntest/drive-sheet-job:latest \
             --region=us-central1 || \
           gcloud run jobs create drive-sheet-job \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/cloudruntest:latest \
+            --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloudruntest/drive-sheet-job:latest \
             --region=us-central1
